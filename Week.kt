@@ -86,8 +86,10 @@ fun TaskManager(){
                     Spacer(modifier = Modifier.width(154.dp))
                     Button(onClick = { showArchiveTasks = false}, enabled = showArchiveTasks,
                         colors = ButtonDefaults.buttonColors(
-                        contentColor = Color(0xFF000000),       // цвет текста
-                        containerColor = Color(0xFF434343)
+                        contentColor = Color(0xFF353538),       // цвет текста
+                        containerColor = Color(0x00434343),
+                            disabledContainerColor = Color(0x00FF0000),
+                            disabledContentColor = Color(0xFF000000)
                     )){
                         Text("active", fontSize = 24.sp)
                     }
@@ -98,8 +100,10 @@ fun TaskManager(){
 
                     Button(onClick = {showArchiveTasks = true}, enabled = !showArchiveTasks,
                         colors = ButtonDefaults.buttonColors(
-                        contentColor = Color(0xFF000000),       // цвет текста
-                        containerColor = Color(0xFF434343)
+                            contentColor = Color(0xFF353538),       // цвет текста
+                            containerColor = Color(0x00434343),
+                            disabledContainerColor = Color(0x00FF0000),
+                            disabledContentColor = Color(0xFF000000)
                         )){
                         Row(){
                             Text("archiv", fontSize = 24.sp)
@@ -110,6 +114,7 @@ fun TaskManager(){
                 Spacer(modifier = Modifier.height(8.dp))
 
                 if (!showArchiveTasks){
+                    tasks.sortWith(compareByDescending{it.priority})
                     tasks.forEach {
                             task -> TaskItem(task){
                             tasks.remove(task)
@@ -189,7 +194,7 @@ fun TaskManager(){
                     },
                     confirmButton = {
                         Button(onClick = {
-                            tasks.sortedBy { it.priority }
+                            //tasks.sortedBy { it.priority }
                             if (title.isNotEmpty() && description.isNotEmpty()) {
                                 tasks.add(Task(title, description, false, priority, time))
                                 title = ""
@@ -228,7 +233,7 @@ fun TaskItem(task: Task, onDelete: () -> Unit){
     val brush = Brush.horizontalGradient(
         colors = colorList,
         startX = 0f,
-        endX = 100f,
+        endX = 500f,
     )
     Card(
 
@@ -238,13 +243,14 @@ fun TaskItem(task: Task, onDelete: () -> Unit){
             disabledContainerColor = Color.Gray,
             disabledContentColor = Color.Black,
         ),
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier
+            .padding(8.dp)
     )
     {
         Box(
             modifier = Modifier
-                .background(brush) // Применяем градиент
-                .padding(16.dp)
+                .background(brush)
+                .padding(start = 2000.dp, top = 8.dp)
         )
 
         Row(
@@ -259,7 +265,9 @@ fun TaskItem(task: Task, onDelete: () -> Unit){
                 onClick = {
                     isChecked = true
                     task.isCompleted = true
+                    onDelete();
                 }
+
             )
             Spacer(modifier = Modifier.height(8.dp))
             Column(
